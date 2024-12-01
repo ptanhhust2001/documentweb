@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /books
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/identity_service"
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  valid-duration: 3600 # in second
+  refreshable-duration: 36000 # in seconds
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    persistAuthorization: true
+    tryItOutEnabled: true
+    csrf.enabled: true
+    operationsSorter: method
+    tags-sorter: alpha
+
+avatar:
+  upload-dir: uploads/avatars
+
+openai:
+  gemini:
+    apiKey: ${YOUR_API_KEY_GEMINI}
+    model: gemini-1.5-flash-latest:generateContent
+    url: https://generativelanguage.googleapis.com/v1beta/models/
