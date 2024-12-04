@@ -17,8 +17,8 @@ import lombok.experimental.FieldDefaults;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
     private String avatarUrl;
 
     String username;

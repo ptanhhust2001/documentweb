@@ -53,7 +53,7 @@ class UserControllerTest {
                 .build();
 
         userResponse = UserResponse.builder()
-                .id("cf0600f538b3")
+                .id(1L)
                 .username("john")
                 .firstName("John")
                 .lastName("Doe")

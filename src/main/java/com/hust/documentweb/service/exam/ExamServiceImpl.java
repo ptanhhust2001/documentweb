@@ -232,7 +232,7 @@ public class ExamServiceImpl implements IExamService {
         Exam data = examMapper.map(dto, Exam.class);
         Optional<ClassEntity> classOpt = classEntityRepository.findById(dto.getClassEntityId());
         Optional<Subject> subjectOpt = subjectRepository.findById(dto.getSubjectId());
-        Optional<User> userOpt = userRepository.findById(String.valueOf(dto.getUserId()));
+        Optional<User> userOpt = userRepository.findById(dto.getUserId());
 
         if (classOpt.isEmpty()) errorMap.put(ErrorCommon.CLASS_DOES_NOT_EXIST, List.of(dto.getClassEntityId()));
         if (subjectOpt.isEmpty()) errorMap.put(ErrorCommon.SUBJECT_DOES_NOT_EXIST, List.of(dto.getSubjectId()));

@@ -3,6 +3,7 @@ package com.hust.documentweb.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,13 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
-    UserMapper userMapper;
+    UserMapper userMapperStruct;
     PasswordEncoder passwordEncoder;
+    ModelMapper userMapper;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 
-        User user = userMapper.toUser(request);
+        User user = userMapperStruct.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
@@ -47,7 +49,7 @@ public class UserService {
 
         user.setRoles(roles);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userMapperStruct.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse getMyInfo() {
@@ -56,36 +58,36 @@ public class UserService {
 
         User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        return userMapper.toUserResponse(user);
+        return userMapper.map(user, UserResponse.class);
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
-    public UserResponse updateUser(String userId, UserUpdateRequest request) {
+    public UserResponse updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        userMapper.updateUser(user, request);
+        userMapperStruct.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         var roles = roleRepository.findAllById(request.getRoles());
         user.setRoles(new HashSet<>(roles));
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userMapperStruct.toUserResponse(userRepository.save(user));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(String userId) {
+    public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
         log.info("In method get Users");
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+        return userRepository.findAll().stream().map(userMapperStruct::toUserResponse).toList();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse getUser(String id) {
-        return userMapper.toUserResponse(
+    public UserResponse getUser(Long id) {
+        return userMapperStruct.toUserResponse(
                 userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 }
