@@ -21,9 +21,13 @@ public class Post {
     Long id;
 
     String title;
+
+    @Column(columnDefinition = "TEXT")
     String content;
+
     String description;
     String author;
+    String imageFilePath;
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)

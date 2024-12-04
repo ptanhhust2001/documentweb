@@ -15,6 +15,7 @@ import com.hust.documentweb.repository.ClassEntityRepository;
 import com.hust.documentweb.repository.PostRepository;
 import com.hust.documentweb.repository.SubjectRepository;
 import com.hust.documentweb.repository.UserRepository;
+import com.hust.documentweb.service.file.IFileService;
 import com.hust.documentweb.utils.spec.BaseSpecs;
 import com.hust.documentweb.utils.spec.Utils;
 import lombok.AccessLevel;
@@ -27,6 +28,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDateTime;
@@ -42,6 +45,7 @@ public class PostServiceImpl implements IPostService{
     ClassEntityRepository classRepository;
     UserRepository userRepository;
     ModelMapper postMapper;
+    IFileService fileService;
 
 
     @Override
@@ -65,7 +69,7 @@ public class PostServiceImpl implements IPostService{
     }
 
     @Override
-    public PostResDTO create(PostReqDTO dto) {
+    public PostResDTO create(PostReqDTO dto, MultipartFile file) {
         Post data = postMapper.map(dto, Post.class);
         Map<Object,Object> errorsMap = new HashMap<>();
         Optional<ClassEntity> classOpt = classRepository.findById(dto.getClassEntityId());
@@ -82,16 +86,18 @@ public class PostServiceImpl implements IPostService{
         data.setSubject(subjectOpt.get());
         data.setUser(userOpt.get());
         data.setAuthor(userOpt.get().getLastName());
+        data.setImageFilePath(fileService.save(file));
 
         save(data, true);
         return postMapper.map(data, PostResDTO.class);
     }
 
     @Override
-    public PostResDTO update(Long id, PostUpdateDTO dto) {
+    public PostResDTO update(Long id, PostUpdateDTO dto, MultipartFile file) {
         Post data = repository.findById(id).orElseThrow(() ->new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, List.of(id))));
         postMapper.map(dto, data);
 
+        data.setImageFilePath(fileService.save(file));
         save(data, false);
         return postMapper.map(data, PostResDTO.class);
     }

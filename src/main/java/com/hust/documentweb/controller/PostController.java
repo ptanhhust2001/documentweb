@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,13 +37,13 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<PostResDTO>> create(@RequestBody PostReqDTO dto) {
-        return ResponseEntity.ok(ResponseDTO.success(service.create(dto)));
+    public ResponseEntity<ResponseDTO<PostResDTO>> create(@RequestBody PostReqDTO dto, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(ResponseDTO.success(service.create(dto, file)));
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO<PostResDTO>> update(@RequestParam Long id,@RequestBody PostUpdateDTO dto) {
-        return ResponseEntity.ok(ResponseDTO.success(service.update(id,dto)));
+    public ResponseEntity<ResponseDTO<PostResDTO>> update(@RequestParam Long id,@RequestBody PostUpdateDTO dto, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(ResponseDTO.success(service.update(id,dto, file)));
     }
 
     @DeleteMapping

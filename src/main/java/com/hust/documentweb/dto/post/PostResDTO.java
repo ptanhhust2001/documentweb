@@ -20,6 +20,7 @@ public class PostResDTO {
     String content;
     String description;
     String author;
+    String imageFilePath;
 
     Long subjectId;
 
