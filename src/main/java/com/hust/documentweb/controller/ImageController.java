@@ -1,14 +1,15 @@
 package com.hust.documentweb.controller;
 
+import com.hust.documentweb.dto.ResponseDTO;
 import com.hust.documentweb.service.file.IFileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.core.io.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/images")
@@ -19,5 +20,10 @@ public class ImageController {
     @GetMapping("/images/{id}")
     public Resource getImage(@PathVariable("id") String imageUri) {
         return fileService.load(imageUri);
+    }
+
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO<String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(ResponseDTO.success(fileService.save(file)));
     }
 }

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -17,4 +19,6 @@ public class ClassResDTO {
     Long id;
 
     String name;
+
+    List<Long> subjectIds;
 }

@@ -14,6 +14,7 @@ public class PostReqDTO {
     String title;
     String content;
     String description;
+    String imageFilePath;
     Long subjectId;
     Long classEntityId;
 }

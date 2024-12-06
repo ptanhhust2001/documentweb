@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    private String avatarUrl;
+    String avatarUrl;
 
     String username;
     String password;

@@ -14,9 +14,15 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
-  valid-duration: 3600 # in second
+  valid-duration: 3600000 # in second
   refreshable-duration: 36000 # in seconds
 
 springdoc:
@@ -31,8 +37,14 @@ springdoc:
 avatar:
   upload-dir: uploads/avatars
 
+file:
+  upload-dir: file:///C:/Users/Anh/OneDrive/Desktop/identity-service/uploads/
+
 openai:
   gemini:
     apiKey: ${YOUR_API_KEY_GEMINI}
     model: gemini-1.5-flash-latest:generateContent
     url: https://generativelanguage.googleapis.com/v1beta/models/
+
+
+
