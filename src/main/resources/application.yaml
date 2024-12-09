@@ -39,6 +39,7 @@ avatar:
 
 file:
   upload-dir: file:///C:/Users/Anh/OneDrive/Desktop/identity-service/uploads/
+  path: http://localhost:8080/books/file/
 
 openai:
   gemini:

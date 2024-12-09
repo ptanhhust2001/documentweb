@@ -23,8 +23,10 @@ public class PostResDTO {
     String imageFilePath;
 
     Long subjectId;
+    String subjectName;
 
     Long classEntityId;
+    String classEntityName;
 
     Long userId;
 

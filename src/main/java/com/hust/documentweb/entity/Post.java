@@ -22,7 +22,7 @@ public class Post {
 
     String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     String content;
 
     String description;

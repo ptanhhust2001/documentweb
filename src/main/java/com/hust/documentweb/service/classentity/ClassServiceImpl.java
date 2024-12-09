@@ -4,6 +4,7 @@ import com.hust.documentweb.constant.ErrorCommon;
 import com.hust.documentweb.constant.FunctionError;
 import com.hust.documentweb.dto.classenity.ClassReqDTO;
 import com.hust.documentweb.dto.classenity.ClassResDTO;
+import com.hust.documentweb.dto.subject.SubjectResDTO;
 import com.hust.documentweb.entity.ClassEntity;
 import com.hust.documentweb.entity.Subject;
 import com.hust.documentweb.exception.BookException;
@@ -22,10 +23,11 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ClassServiceImpl implements com.document.Documentweb.service.classentity.IClassService {
+public class ClassServiceImpl implements IClassService {
     ClassEntityRepository repository;
     SubjectRepository subjectRepository;
     ModelMapper classMapper;
+    ModelMapper mapper;
 
     @Override
     public ClassResDTO create(ClassReqDTO dto) {
@@ -43,12 +45,20 @@ public class ClassServiceImpl implements com.document.Documentweb.service.classe
     }
 
     @Override
-    public List<ClassResDTO> findAll(){
+    public List<ClassResDTO> findAll() {
         return repository.findAll()
                 .stream()
                 .map(data -> classMapper.map(data, ClassResDTO.class))
+                .map(data -> {
+                    List<SubjectResDTO> subjectResDTOs = data.getSubjects().stream()
+                            .map(subject -> mapper.map(subject, SubjectResDTO.class))
+                            .toList();
+                    data.setSubjects(subjectResDTOs);
+                    return data;
+                })
                 .toList();
     }
+
 
     @Override
     public ClassResDTO findById(Long id) {

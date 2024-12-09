@@ -13,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 public class ExamReqDTO {
     String name;
     Long classEntityId;
+    String classEntityName;
     Long subjectId;
+    String subjectName;
     Long userId;
 }

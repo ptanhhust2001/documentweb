@@ -5,6 +5,8 @@ import com.hust.documentweb.exception.BookException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,10 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileServiceImpl implements IFileService{
     Path root = Paths.get("./uploads");
+
+    @NonFinal
+    @Value("${file.path}")
+    String linkPath;
     public void init() {
         try {
             Files.createDirectories(root);
@@ -36,7 +42,7 @@ public class FileServiceImpl implements IFileService{
         try {
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Files.copy(file.getInputStream(), this.root.resolve(fileName));
-            return fileName;
+            return linkPath + fileName;
         } catch (Exception ex) {
             throw new BookException(FunctionError.UPLOAD_FAILED,ex.getMessage());
         }

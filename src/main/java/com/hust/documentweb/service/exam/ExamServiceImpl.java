@@ -1,12 +1,12 @@
 package com.hust.documentweb.service.exam;
 
+import com.graphbuilder.math.func.EFunction;
 import com.hust.documentweb.constant.CommonConstrant;
 import com.hust.documentweb.constant.ErrorCommon;
 import com.hust.documentweb.constant.FunctionError;
-import com.hust.documentweb.dto.exam.ExamReqDTO;
-import com.hust.documentweb.dto.exam.ExamReqOpenAiDTO;
-import com.hust.documentweb.dto.exam.ExamResDTO;
-import com.hust.documentweb.dto.exam.ExamUpdateDTO;
+import com.hust.documentweb.dto.ResponsePageDTO;
+import com.hust.documentweb.dto.exam.*;
+import com.hust.documentweb.dto.question.QuestionResDTO;
 import com.hust.documentweb.entity.*;
 import com.hust.documentweb.exception.BookException;
 import com.hust.documentweb.repository.*;
@@ -20,6 +20,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,17 +45,53 @@ public class ExamServiceImpl implements IExamService {
     QuestionRepository questionRepository;
     GeminiService geminiService;
 
+    ModelMapper questionMapper;
+
     @Override
-    public List<ExamResDTO> findAll(String advanceSearch) {
-        List<Exam> datas = repository.findAll(BaseSpecs.searchQuery(advanceSearch));
-        return Utils.mapList(examMapper, datas, ExamResDTO.class);
+    public ResponsePageDTO<List<ExamResDTO>> findAll(String advanceSearch, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("updateAt").descending());
+        Page<Exam> datas = repository.findAll(BaseSpecs.searchQuery(advanceSearch), pageable);
+        return ResponsePageDTO.success(Utils.mapList(examMapper, datas.getContent(), ExamResDTO.class), datas.getTotalElements());
     }
 
     @Override
-    public ExamResDTO findById(Long id) {
+    public ExamExResDTO findById(Long id) {
         Exam data = repository.findById(id).orElseThrow(
                 () -> new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.EXAM_NOT_FOUND, List.of(id))));
-        return examMapper.map(data, ExamResDTO.class);
+        List<QuestionResDTO> questions = data.getQuestions().stream().map(question -> questionMapper.map(question, QuestionResDTO.class)).toList();
+        ExamExResDTO resDTO = examMapper.map(data, ExamExResDTO.class);
+        resDTO.setQuestions(questions);
+        return resDTO;
+    }
+
+    @Override
+    public ExamResResultDTO checkAnswer(ExamReqResultDTO answers) {
+
+        final Integer[] totalAns = {0};
+        final Integer[] totalAnsCorrect = {0};
+        List<Long> answersInCorrect = new ArrayList<>();
+        List<Long> answersCorrect = new ArrayList<>();
+        ExamResResultDTO resDTO = new ExamResResultDTO();
+        HashMap<Object, List<Object>> errorMap = new HashMap<>();
+        answers.getAnswers().forEach(answer -> {
+            questionRepository.findById(answer.getId()).ifPresentOrElse( question -> {
+                totalAns[0]++;
+                if (question.getCorrectAnswer().equals(answer.getAnswer().trim().toUpperCase())) {
+                    totalAnsCorrect[0]++;
+                    answersCorrect.add(question.getId());
+                } else {
+                    answersInCorrect.add(question.getId());
+                }
+                    },
+                    () -> errorMap.computeIfAbsent(ErrorCommon.QUESTION_NOT_FOUND, k -> new ArrayList<>()).add(answer.getId()));
+        });
+        if (!errorMap.isEmpty()) throw new BookException(ErrorCommon.QUESTION_NOT_FOUND, errorMap);
+
+        resDTO.setTotalAns(totalAns[0]);
+        resDTO.setTotalAnsCorrect(totalAnsCorrect[0]);
+        resDTO.setAnswersInCorrect(answersInCorrect);
+        resDTO.setAnswersCorrect(answersCorrect);
+        return resDTO;
     }
 
     @Override

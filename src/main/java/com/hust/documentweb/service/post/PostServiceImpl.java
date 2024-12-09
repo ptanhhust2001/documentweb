@@ -46,7 +46,7 @@ public class PostServiceImpl implements IPostService{
 
     @Override
     public ResponsePageDTO<List<PostResDTO>> findAll(Pageable pageable, String advancedSearch) {
-        Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("updateBy").descending());
+        Pageable page = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("updateAt").descending());
         Page data = repository.findAll(BaseSpecs.searchQuery(advancedSearch), page);
         List<PostResDTO> results = data.getContent().stream().map(post -> postMapper.map(post, PostResDTO.class)).toList();
         return ResponsePageDTO.success(results, data.getTotalElements());

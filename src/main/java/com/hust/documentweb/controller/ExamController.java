@@ -1,16 +1,16 @@
 package com.hust.documentweb.controller;
 
 import com.hust.documentweb.dto.ResponseDTO;
-import com.hust.documentweb.dto.exam.ExamReqDTO;
-import com.hust.documentweb.dto.exam.ExamReqOpenAiDTO;
-import com.hust.documentweb.dto.exam.ExamResDTO;
-import com.hust.documentweb.dto.exam.ExamUpdateDTO;
+import com.hust.documentweb.dto.ResponsePageDTO;
+import com.hust.documentweb.dto.exam.*;
 import com.hust.documentweb.service.exam.IExamService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +28,26 @@ public class ExamController {
     IExamService service;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<List<ExamResDTO>>> getAll(@RequestParam(required = false) String advanceSearch) {
-        return ResponseEntity.ok(ResponseDTO.success(service.findAll(advanceSearch)));
+    public ResponseEntity<ResponsePageDTO<List<ExamResDTO>>> getAll(@RequestParam(required = false) String advanceSearch,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "" + Integer.MAX_VALUE) int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(service.findAll(advanceSearch, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO<ExamResDTO>> getById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO<ExamExResDTO>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ResponseDTO.success(service.findById(id)));
     }
 
     @PostMapping
     public ResponseEntity<ResponseDTO<ExamResDTO>> create(@RequestBody @Valid ExamReqDTO dto) {
         return ResponseEntity.ok(ResponseDTO.success(service.create(dto)));
+    }
+
+    @PostMapping("/check-answer")
+    public ResponseEntity<ResponseDTO<ExamResResultDTO>> checkAnswer(@RequestBody ExamReqResultDTO answer) {
+        return ResponseEntity.ok(ResponseDTO.success(service.checkAnswer(answer)));
     }
 
 /*    @PostMapping(value = "/questions", consumes = MediaType.ALL_VALUE)

@@ -1,6 +1,4 @@
-package com.document.Documentweb.service.classentity;
-
-
+package com.hust.documentweb.service.classentity;
 
 
 import com.hust.documentweb.dto.classenity.ClassReqDTO;

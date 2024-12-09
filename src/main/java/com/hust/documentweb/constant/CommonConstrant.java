@@ -5,7 +5,12 @@ public class CommonConstrant {
     public static final String KEY = "?key=";
 
     public static final String NEW_OPERATOR = "＆（）｜＝＞＜～［］！，≠≁";
-    public static final String FORMAT = "tạo 20 câu hỏi trắc nhiệm có 4 đáp án, ký tự * nằm trước đáp án đúng , hãy trả lời theo đúng format : ## đề tài \n\n**Câu 1:**  câu hỏi 1\n* a) đáp án a\nb) đáp án b\nc) đáp án c\nd) đáp án d\n\n**Câu 2:**  câu hỏi 2:\na) đáp án a\n* b) đáp án b\nc) đáp án c\nd) đáp án d , sao cho các đáp án đúng đuợc phân boor đều từ a đến d, câu hỏi chỉ nằm trên 1 dòng và các đáp án chỉ nằm trên 1 dòng, theo chủ đề : ";
+    public static final String FORMAT = "tạo 20 câu hỏi trắc nhiệm có 4 đáp án, ký tự * nằm trước đáp án đúng , hãy trả lời theo đúng format :" +
+            " ## đề tài \n\n**Câu 1:**  câu hỏi 1\n* a) đáp án a\nb) đáp án b\nc) đáp án c\nd) đáp án d\n\n**Câu 2:**  câu hỏi 2:\na) đáp án a\n* b) đáp án b\nc) đáp án c\nd) đáp án d ," +
+            " sao cho các đáp án đúng đuợc phân boor đều từ a đến d," +
+            " câu hỏi chỉ nằm trên 1 dòng và các đáp án chỉ nằm trên 1 dòng," +
+            " nếu câu hỏi và đáp án có ký tự đặc biệt thì hãy viết dưới dạng format của katex của reactjs," +
+            " theo chủ đề : ";
 
     // ＆（）｜＝＞＜～［］！
     public static final String AND = "＆";

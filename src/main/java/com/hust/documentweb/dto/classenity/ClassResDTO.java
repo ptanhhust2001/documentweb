@@ -1,6 +1,7 @@
 package com.hust.documentweb.dto.classenity;
 
 
+import com.hust.documentweb.dto.subject.SubjectResDTO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,5 @@ public class ClassResDTO {
 
     String name;
 
-    List<Long> subjectIds;
+    List<SubjectResDTO> subjects;
 }

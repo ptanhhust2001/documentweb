@@ -17,7 +17,10 @@ public class PostMapperConfig {
     public ModelMapper postMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-        PropertyMap<?,?> map1 = getPropertyMap();
+        PropertyMap<?,?> map1 = new PropertyMap<Post, PostResDTO>() {
+            protected void configure() {
+            }
+        };
         PropertyMap<?,?> map2 = new PropertyMap<PostReqDTO, Post>(){
             protected void configure() {
                 skip(destination.getId());
@@ -35,15 +38,15 @@ public class PostMapperConfig {
         return mapper;
     }
 
-    private static PropertyMap<?, ?> getPropertyMap() {
-        Converter<String, String> toUrl = context -> {
-            return "http://localhost:8080/books/file/" + context.getSource();
-        };
-
-        return new PropertyMap<Post, PostResDTO>() {
-            protected void configure() {
-                using(toUrl).map(source.getImageFilePath(), destination.getImageFilePath());
-            }
-        };
-    }
+//    private static PropertyMap<?, ?> getPropertyMap() {
+//        Converter<String, String> toUrl = context -> {
+//            return "http://localhost:8080/books/file/" + context.getSource();
+//        };
+//
+//        return new PropertyMap<Post, PostResDTO>() {
+//            protected void configure() {
+//                using(toUrl).map(source.getImageFilePath(), destination.getImageFilePath());
+//            }
+//        };
+//    }
 }

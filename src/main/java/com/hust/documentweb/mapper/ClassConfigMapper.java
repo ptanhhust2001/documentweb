@@ -43,7 +43,7 @@ public class ClassConfigMapper {
 
         return new PropertyMap<ClassEntity, ClassResDTO>() {
             protected void configure() {
-                using(toList).map(source.getSubjects(), destination.getSubjectIds());
+//                using(toList).map(source.getSubjects(), destination.getSubjectIds());
             }
         };
     }
