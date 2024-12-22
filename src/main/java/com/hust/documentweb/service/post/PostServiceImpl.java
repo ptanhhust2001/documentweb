@@ -3,6 +3,7 @@ package com.hust.documentweb.service.post;
 import com.hust.documentweb.constant.ErrorCommon;
 import com.hust.documentweb.constant.FunctionError;
 import com.hust.documentweb.dto.ResponsePageDTO;
+import com.hust.documentweb.dto.comment.CommentResDTO;
 import com.hust.documentweb.dto.post.PostReqDTO;
 import com.hust.documentweb.dto.post.PostResDTO;
 import com.hust.documentweb.dto.post.PostUpdateDTO;
@@ -42,6 +43,7 @@ public class PostServiceImpl implements IPostService{
     ClassEntityRepository classRepository;
     UserRepository userRepository;
     ModelMapper postMapper;
+    ModelMapper commentMapper;
 
 
     @Override
@@ -64,7 +66,13 @@ public class PostServiceImpl implements IPostService{
         Post data = repository.findById(id)
                 .orElseThrow(()
                         -> new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, List.of(id))));
-        return postMapper.map(data, PostResDTO.class);
+        PostResDTO result = postMapper.map(data, PostResDTO.class);
+        result.setComments(data.getComments()
+                .stream()
+                .map(comment -> commentMapper.map(comment, CommentResDTO.class))
+                .toList()
+        );
+        return result;
     }
 
     @Override

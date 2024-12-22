@@ -1,5 +1,6 @@
 package com.hust.documentweb.entity;
 
+import com.hust.documentweb.constant.enums.EPostType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +30,9 @@ public class Post {
     String author;
     String imageFilePath;
 
+    @Enumerated(EnumType.STRING)
+    EPostType type;
+
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
@@ -41,7 +45,7 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     Set<Comment> comments;
 
     @OneToMany(mappedBy = "post")

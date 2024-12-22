@@ -19,6 +19,7 @@ public class PostMapperConfig {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         PropertyMap<?,?> map1 = new PropertyMap<Post, PostResDTO>() {
             protected void configure() {
+                skip(destination.getComments());
             }
         };
         PropertyMap<?,?> map2 = new PropertyMap<PostReqDTO, Post>(){

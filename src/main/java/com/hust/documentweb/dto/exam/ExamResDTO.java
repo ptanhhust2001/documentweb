@@ -16,7 +16,9 @@ public class ExamResDTO {
     Long id;
     String name;
     Long classEntityId;
+    String classEntityName;
     Long subjectId;
+    String subjectName;
     Long userId;
     LocalDateTime createAt;
     LocalDateTime updateAt;

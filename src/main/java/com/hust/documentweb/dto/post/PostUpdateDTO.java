@@ -1,5 +1,6 @@
 package com.hust.documentweb.dto.post;
 
+import com.hust.documentweb.constant.enums.EPostType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class PostUpdateDTO {
         String title;
         String content;
+
+        EPostType type;
         String description;
 }

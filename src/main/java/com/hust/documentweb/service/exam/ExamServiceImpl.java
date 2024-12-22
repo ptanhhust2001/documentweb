@@ -272,11 +272,11 @@ public class ExamServiceImpl implements IExamService {
         Exam data = examMapper.map(dto, Exam.class);
         Optional<ClassEntity> classOpt = classEntityRepository.findById(dto.getClassEntityId());
         Optional<Subject> subjectOpt = subjectRepository.findById(dto.getSubjectId());
-        Optional<User> userOpt = userRepository.findById(dto.getUserId());
+        Optional<User> userOpt = userRepository.findByUsername(Utils.getCurrentUser());
 
         if (classOpt.isEmpty()) errorMap.put(ErrorCommon.CLASS_DOES_NOT_EXIST, List.of(dto.getClassEntityId()));
         if (subjectOpt.isEmpty()) errorMap.put(ErrorCommon.SUBJECT_DOES_NOT_EXIST, List.of(dto.getSubjectId()));
-        if (userOpt.isEmpty()) errorMap.put(ErrorCommon.USER_DOES_NOT_EXIST, List.of(dto.getUserId()));
+        if (userOpt.isEmpty()) errorMap.put(ErrorCommon.USER_DOES_NOT_EXIST, List.of(null));
 
         if (!errorMap.isEmpty()) throw new BookException(FunctionError.CREATE_FAILED, errorMap);
 

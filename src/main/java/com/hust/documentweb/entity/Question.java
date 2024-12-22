@@ -17,11 +17,21 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(columnDefinition = "LONGTEXT")
     String question;
+
+    @Column(columnDefinition = "LONGTEXT")
     String firstAnswer;
+
+    @Column(columnDefinition = "LONGTEXT")
     String secondAnswer;
+
+    @Column(columnDefinition = "LONGTEXT")
     String thirdAnswer;
+
+    @Column(columnDefinition = "LONGTEXT")
     String fourthAnswer;
+
     String correctAnswer;
 
 

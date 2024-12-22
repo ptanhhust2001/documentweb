@@ -45,8 +45,7 @@ public class PostController {
 
     @PutMapping
     public ResponseEntity<ResponseDTO<PostResDTO>> update(@RequestParam Long id,
-                                                          @RequestBody PostUpdateDTO dto,
-                                                          @RequestPart("file") MultipartFile file) {
+                                                          @RequestBody PostUpdateDTO dto) {
         return ResponseEntity.ok(ResponseDTO.success(service.update(id, dto)));
     }
 

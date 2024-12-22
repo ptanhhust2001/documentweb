@@ -16,5 +16,4 @@ public class ExamReqDTO {
     String classEntityName;
     Long subjectId;
     String subjectName;
-    Long userId;
 }
