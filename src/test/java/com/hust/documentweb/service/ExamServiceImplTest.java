@@ -1,5 +1,17 @@
 package com.hust.documentweb.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import com.hust.documentweb.dto.exam.ExamReqDTO;
 import com.hust.documentweb.dto.exam.ExamResDTO;
 import com.hust.documentweb.dto.exam.ExamUpdateDTO;
@@ -8,25 +20,14 @@ import com.hust.documentweb.entity.Exam;
 import com.hust.documentweb.entity.Subject;
 import com.hust.documentweb.entity.User;
 import com.hust.documentweb.exception.BookException;
-import com.hust.documentweb.repository.ExamRepository;
 import com.hust.documentweb.repository.ClassEntityRepository;
+import com.hust.documentweb.repository.ExamRepository;
+import com.hust.documentweb.repository.QuestionRepository;
 import com.hust.documentweb.repository.SubjectRepository;
 import com.hust.documentweb.repository.UserRepository;
-import com.hust.documentweb.repository.QuestionRepository;
 import com.hust.documentweb.service.exam.ExamServiceImpl;
 import com.hust.documentweb.service.openai.GeminiService;
 import com.hust.documentweb.utils.spec.Utils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class ExamServiceImplTest {
@@ -107,19 +108,19 @@ class ExamServiceImplTest {
         verify(examRepository, times(1)).save(any(Exam.class));
     }
 
-//    @Test
-//    void testCreate_ValidationFailure() {
-//        ExamReqDTO examReqDTO = new ExamReqDTO();
-//        examReqDTO.setClassEntityId(999L);  // Invalid classId
-//        examReqDTO.setSubjectId(1L);
-//        examReqDTO.setUserId(1L);
-//
-//        when(classEntityRepository.findById(999L)).thenReturn(Optional.empty());
-//
-//        BookException exception = assertThrows(BookException.class, () -> examService.create(examReqDTO));
-//        assertEquals("CREATE_FAILED", exception.getErrorCode());
-//        assertTrue(exception.getErrorDetails().containsKey("CLASS_DOES_NOT_EXIST"));
-//    }
+    //    @Test
+    //    void testCreate_ValidationFailure() {
+    //        ExamReqDTO examReqDTO = new ExamReqDTO();
+    //        examReqDTO.setClassEntityId(999L);  // Invalid classId
+    //        examReqDTO.setSubjectId(1L);
+    //        examReqDTO.setUserId(1L);
+    //
+    //        when(classEntityRepository.findById(999L)).thenReturn(Optional.empty());
+    //
+    //        BookException exception = assertThrows(BookException.class, () -> examService.create(examReqDTO));
+    //        assertEquals("CREATE_FAILED", exception.getErrorCode());
+    //        assertTrue(exception.getErrorDetails().containsKey("CLASS_DOES_NOT_EXIST"));
+    //    }
 
     @Test
     void testUpdate_ExamExists() {
@@ -135,40 +136,41 @@ class ExamServiceImplTest {
 
         ExamResDTO result = examService.update(examId, examUpdateDTO);
 
-assertNotNull(result);
-assertEquals("Updated Exam", result.getName());
-        }
+        assertNotNull(result);
+        assertEquals("Updated Exam", result.getName());
+    }
 
-@Test
-void testUpdate_ExamNotFound() {
-    Long examId = 1L;
-    ExamUpdateDTO examUpdateDTO = new ExamUpdateDTO();
+    @Test
+    void testUpdate_ExamNotFound() {
+        Long examId = 1L;
+        ExamUpdateDTO examUpdateDTO = new ExamUpdateDTO();
 
-    when(examRepository.findById(examId)).thenReturn(Optional.empty());
+        when(examRepository.findById(examId)).thenReturn(Optional.empty());
 
-    BookException exception = assertThrows(BookException.class, () -> examService.update(examId, examUpdateDTO));
-    assertEquals("NOT_FOUND", exception.getErrorCode());
-}
+        BookException exception = assertThrows(BookException.class, () -> examService.update(examId, examUpdateDTO));
+        assertEquals("NOT_FOUND", exception.getErrorCode());
+    }
 
-@Test
-void testDeleteAllById_Success() {
-    Long examId = 1L;
-    when(examRepository.findById(examId)).thenReturn(Optional.of(new Exam()));
+    @Test
+    void testDeleteAllById_Success() {
+        Long examId = 1L;
+        when(examRepository.findById(examId)).thenReturn(Optional.of(new Exam()));
 
-    examService.deleteAllById(List.of(examId));
+        examService.deleteAllById(List.of(examId));
 
-    verify(examRepository, times(1)).deleteAllById(List.of(examId));
-}
+        verify(examRepository, times(1)).deleteAllById(List.of(examId));
+    }
 
-//    @Test
-//    void testDeleteAllById_ExamNotFound() {
-//        Long examId = 1L;
-//        when(examRepository.findById(examId)).thenReturn(Optional.empty());
-//
-//        BookException exception = assertThrows(BookException.class, () -> examService.deleteAllById(List.of(examId)));
-//        assertEquals("DELETE_FAILED", exception.getErrorCode());
-//        assertTrue(exception.getErrorDetails().containsKey("EXAM_NOT_FOUND"));
-//    }
+    //    @Test
+    //    void testDeleteAllById_ExamNotFound() {
+    //        Long examId = 1L;
+    //        when(examRepository.findById(examId)).thenReturn(Optional.empty());
+    //
+    //        BookException exception = assertThrows(BookException.class, () ->
+    // examService.deleteAllById(List.of(examId)));
+    //        assertEquals("DELETE_FAILED", exception.getErrorCode());
+    //        assertTrue(exception.getErrorDetails().containsKey("EXAM_NOT_FOUND"));
+    //    }
 
-// Other tests for upload and createQuestionByOpenAi can be written similarly...
+    // Other tests for upload and createQuestionByOpenAi can be written similarly...
 }

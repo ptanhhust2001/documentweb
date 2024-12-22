@@ -1,6 +1,20 @@
 package com.hust.documentweb.service.exam;
 
-import com.graphbuilder.math.func.EFunction;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hust.documentweb.constant.CommonConstrant;
 import com.hust.documentweb.constant.ErrorCommon;
 import com.hust.documentweb.constant.FunctionError;
@@ -13,24 +27,11 @@ import com.hust.documentweb.repository.*;
 import com.hust.documentweb.service.openai.GeminiService;
 import com.hust.documentweb.utils.spec.BaseSpecs;
 import com.hust.documentweb.utils.spec.Utils;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.*;
 
 @Slf4j
 @Service
@@ -49,16 +50,24 @@ public class ExamServiceImpl implements IExamService {
 
     @Override
     public ResponsePageDTO<List<ExamResDTO>> findAll(String advanceSearch, Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("updateAt").descending());
+        pageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("updateAt").descending());
         Page<Exam> datas = repository.findAll(BaseSpecs.searchQuery(advanceSearch), pageable);
-        return ResponsePageDTO.success(Utils.mapList(examMapper, datas.getContent(), ExamResDTO.class), datas.getTotalElements());
+        return ResponsePageDTO.success(
+                Utils.mapList(examMapper, datas.getContent(), ExamResDTO.class), datas.getTotalElements());
     }
 
     @Override
     public ExamExResDTO findById(Long id) {
-        Exam data = repository.findById(id).orElseThrow(
-                () -> new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.EXAM_NOT_FOUND, List.of(id))));
-        List<QuestionResDTO> questions = data.getQuestions().stream().map(question -> questionMapper.map(question, QuestionResDTO.class)).toList();
+        Exam data = repository
+                .findById(id)
+                .orElseThrow(() ->
+                        new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.EXAM_NOT_FOUND, List.of(id))));
+        List<QuestionResDTO> questions = data.getQuestions().stream()
+                .map(question -> questionMapper.map(question, QuestionResDTO.class))
+                .toList();
         ExamExResDTO resDTO = examMapper.map(data, ExamExResDTO.class);
         resDTO.setQuestions(questions);
         return resDTO;
@@ -74,16 +83,21 @@ public class ExamServiceImpl implements IExamService {
         ExamResResultDTO resDTO = new ExamResResultDTO();
         HashMap<Object, List<Object>> errorMap = new HashMap<>();
         answers.getAnswers().forEach(answer -> {
-            questionRepository.findById(answer.getId()).ifPresentOrElse( question -> {
-                totalAns[0]++;
-                if (question.getCorrectAnswer().equals(answer.getAnswer().trim().toUpperCase())) {
-                    totalAnsCorrect[0]++;
-                    answersCorrect.add(question.getId());
-                } else {
-                    answersInCorrect.add(question.getId());
-                }
-                    },
-                    () -> errorMap.computeIfAbsent(ErrorCommon.QUESTION_NOT_FOUND, k -> new ArrayList<>()).add(answer.getId()));
+            questionRepository
+                    .findById(answer.getId())
+                    .ifPresentOrElse(
+                            question -> {
+                                totalAns[0]++;
+                                if (question.getCorrectAnswer()
+                                        .equals(answer.getAnswer().trim().toUpperCase())) {
+                                    totalAnsCorrect[0]++;
+                                    answersCorrect.add(question.getId());
+                                } else {
+                                    answersInCorrect.add(question.getId());
+                                }
+                            },
+                            () -> errorMap.computeIfAbsent(ErrorCommon.QUESTION_NOT_FOUND, k -> new ArrayList<>())
+                                    .add(answer.getId()));
         });
         if (!errorMap.isEmpty()) throw new BookException(ErrorCommon.QUESTION_NOT_FOUND, errorMap);
 
@@ -106,8 +120,10 @@ public class ExamServiceImpl implements IExamService {
 
     @Override
     public ExamResDTO update(Long id, ExamUpdateDTO dto) {
-        Exam data = repository.findById(id).orElseThrow(
-                () -> new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.EXAM_NOT_FOUND, List.of(id))));
+        Exam data = repository
+                .findById(id)
+                .orElseThrow(() ->
+                        new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.EXAM_NOT_FOUND, List.of(id))));
         examMapper.map(dto, data);
 
         save(data, false);
@@ -116,8 +132,10 @@ public class ExamServiceImpl implements IExamService {
 
     @Override
     public void deleteAllById(List<Long> ids) {
-        List<Long> notFound = ids.stream().filter(id -> repository.findById(id).isEmpty()).toList();
-        if (!notFound.isEmpty()) throw new BookException(FunctionError.DELETE_FAILED, Map.of(ErrorCommon.EXAM_NOT_FOUND, notFound));
+        List<Long> notFound =
+                ids.stream().filter(id -> repository.findById(id).isEmpty()).toList();
+        if (!notFound.isEmpty())
+            throw new BookException(FunctionError.DELETE_FAILED, Map.of(ErrorCommon.EXAM_NOT_FOUND, notFound));
         repository.deleteAllById(ids);
     }
 
@@ -140,7 +158,7 @@ public class ExamServiceImpl implements IExamService {
         if (!questionList.peek().isEmpty()) {
             name = questionList.poll().get(0);
         }
-        if (name == null) errorMap.put(ErrorCommon.TITLE_NOT_NULL,List.of(""));
+        if (name == null) errorMap.put(ErrorCommon.TITLE_NOT_NULL, List.of(""));
         Optional<ClassEntity> classEntity = classEntityRepository.findById(classId);
         Optional<Subject> subject = subjectRepository.findById(subjectId);
         if (classEntity.isEmpty()) errorMap.put(ErrorCommon.CLASS_DOES_NOT_EXIST, List.of(classId));
@@ -170,7 +188,7 @@ public class ExamServiceImpl implements IExamService {
         return resDTO;
     }
 
-    private List<Question> stringToQuestions(String input,Exam exam) {
+    private List<Question> stringToQuestions(String input, Exam exam) {
         // Tách câu hỏi từ chuỗi input
         String[] questionsArray = input.split("\\*\\*Câu \\d+:\\*\\*");
         List<Question> questionsList = new ArrayList<>();
@@ -197,7 +215,8 @@ public class ExamServiceImpl implements IExamService {
             else if (parts[4].startsWith("*")) correctAnswer = "D";
 
             // Tạo đối tượng Question và thêm vào danh sách
-            questionsList.add(new Question(questionText, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer, correctAnswer, exam));
+            questionsList.add(new Question(
+                    questionText, firstAnswer, secondAnswer, thirdAnswer, fourthAnswer, correctAnswer, exam));
         }
         return questionsList;
     }
@@ -207,35 +226,35 @@ public class ExamServiceImpl implements IExamService {
         while (!queue.isEmpty()) {
             List<String> data = queue.poll();
             if (data.size() >= 4) {
-              Question question = new Question();
-              question.setQuestion(data.get(0));
-              if (data.get(1).charAt(0) == '*') {
-                  question.setCorrectAnswer("A");
-                  question.setFirstAnswer(data.get(1).substring(1));
-              } else {
-                  question.setFirstAnswer(data.get(1));
-              }
-              if (data.get(2).charAt(0) == '*') {
-                  question.setCorrectAnswer("B");
-                  question.setSecondAnswer(data.get(2).substring(1));
-              } else {
-                  question.setSecondAnswer(data.get(2));
-              }
-              if (data.get(3).charAt(0) == '*') {
-                  question.setCorrectAnswer("C");
-                  question.setThirdAnswer(data.get(3).substring(1));
-              } else {
-                  question.setThirdAnswer(data.get(3));
-              }
-              if (data.size() >= 5 && data.get(4).charAt(0) == '*') {
-                  question.setCorrectAnswer("D");
-                  question.setFourthAnswer(data.get(4).substring(1));
-              } else {
-                  question.setFourthAnswer(data.get(4));
-              }
-              if (question.getCorrectAnswer() != null) {
-                listQuestion.add(question);
-              }
+                Question question = new Question();
+                question.setQuestion(data.get(0));
+                if (data.get(1).charAt(0) == '*') {
+                    question.setCorrectAnswer("A");
+                    question.setFirstAnswer(data.get(1).substring(1));
+                } else {
+                    question.setFirstAnswer(data.get(1));
+                }
+                if (data.get(2).charAt(0) == '*') {
+                    question.setCorrectAnswer("B");
+                    question.setSecondAnswer(data.get(2).substring(1));
+                } else {
+                    question.setSecondAnswer(data.get(2));
+                }
+                if (data.get(3).charAt(0) == '*') {
+                    question.setCorrectAnswer("C");
+                    question.setThirdAnswer(data.get(3).substring(1));
+                } else {
+                    question.setThirdAnswer(data.get(3));
+                }
+                if (data.size() >= 5 && data.get(4).charAt(0) == '*') {
+                    question.setCorrectAnswer("D");
+                    question.setFourthAnswer(data.get(4).substring(1));
+                } else {
+                    question.setFourthAnswer(data.get(4));
+                }
+                if (question.getCorrectAnswer() != null) {
+                    listQuestion.add(question);
+                }
             }
         }
         return listQuestion;
@@ -267,7 +286,6 @@ public class ExamServiceImpl implements IExamService {
         }
     }
 
-
     private Exam validation(ExamReqDTO dto, Map<Object, Object> errorMap) {
         Exam data = examMapper.map(dto, Exam.class);
         Optional<ClassEntity> classOpt = classEntityRepository.findById(dto.getClassEntityId());
@@ -280,10 +298,9 @@ public class ExamServiceImpl implements IExamService {
 
         if (!errorMap.isEmpty()) throw new BookException(FunctionError.CREATE_FAILED, errorMap);
 
-        data.setClassEntity(classOpt.get()  );
+        data.setClassEntity(classOpt.get());
         data.setSubject(subjectOpt.get());
         data.setUser(userOpt.get());
         return data;
     }
-
 }

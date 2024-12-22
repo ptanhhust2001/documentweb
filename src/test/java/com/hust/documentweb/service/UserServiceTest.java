@@ -1,31 +1,31 @@
-//package com.hust.documentweb.service;
+// package com.hust.documentweb.service;
 //
-//import static org.junit.jupiter.api.Assertions.assertThrows;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.ArgumentMatchers.anyString;
-//import static org.mockito.Mockito.when;
+// import static org.junit.jupiter.api.Assertions.assertThrows;
+// import static org.mockito.ArgumentMatchers.any;
+// import static org.mockito.ArgumentMatchers.anyString;
+// import static org.mockito.Mockito.when;
 //
-//import java.time.LocalDate;
-//import java.util.Optional;
+// import java.time.LocalDate;
+// import java.util.Optional;
 //
-//import org.assertj.core.api.Assertions;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.security.test.context.support.WithMockUser;
-//import org.springframework.test.context.TestPropertySource;
+// import org.assertj.core.api.Assertions;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.boot.test.mock.mockito.MockBean;
+// import org.springframework.security.test.context.support.WithMockUser;
+// import org.springframework.test.context.TestPropertySource;
 //
-//import com.hust.documentweb.dto.request.UserCreationRequest;
-//import com.hust.documentweb.dto.response.UserResponse;
-//import com.hust.documentweb.entity.User;
-//import com.hust.documentweb.exception.AppException;
-//import com.hust.documentweb.repository.UserRepository;
+// import com.hust.documentweb.dto.request.UserCreationRequest;
+// import com.hust.documentweb.dto.response.UserResponse;
+// import com.hust.documentweb.entity.User;
+// import com.hust.documentweb.exception.AppException;
+// import com.hust.documentweb.repository.UserRepository;
 //
-//@SpringBootTest
-//@TestPropertySource("/test.properties")
-//public class UserServiceTest {
+// @SpringBootTest
+// @TestPropertySource("/test.properties")
+// public class UserServiceTest {
 //    @Autowired
 //    private UserService userService;
 //
@@ -113,4 +113,4 @@
 //
 //        Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1005);
 //    }
-//}
+// }

@@ -1,15 +1,16 @@
 package com.hust.documentweb.dto.post;
 
+import java.time.LocalDateTime;
+import java.util.List;
 
 import com.hust.documentweb.dto.comment.CommentResDTO;
+import com.hust.documentweb.dto.material.MaterialResDTO;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -41,4 +42,6 @@ public class PostResDTO {
     String updateBy;
 
     List<CommentResDTO> comments;
+
+    List<MaterialResDTO> materials;
 }

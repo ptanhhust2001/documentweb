@@ -1,6 +1,7 @@
 package com.hust.documentweb.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -34,12 +35,18 @@ public class Question {
 
     String correctAnswer;
 
-
     @ManyToOne
     @JoinColumn(name = "exam_id")
     Exam exam;
 
-    public Question(String question, String firstAnswer, String secondAnswer, String thirdAnswer, String fourthAnswer, String correctAnswer, Exam exam) {
+    public Question(
+            String question,
+            String firstAnswer,
+            String secondAnswer,
+            String thirdAnswer,
+            String fourthAnswer,
+            String correctAnswer,
+            Exam exam) {
         this.question = question;
         this.firstAnswer = firstAnswer;
         this.secondAnswer = secondAnswer;

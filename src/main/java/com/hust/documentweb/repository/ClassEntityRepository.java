@@ -1,10 +1,11 @@
 package com.hust.documentweb.repository;
 
-import com.hust.documentweb.entity.ClassEntity;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.hust.documentweb.entity.ClassEntity;
 
 @Repository
 public interface ClassEntityRepository extends JpaRepository<ClassEntity, Long> {

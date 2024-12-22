@@ -1,14 +1,15 @@
 package com.hust.documentweb.mapper;
 
-import com.hust.documentweb.dto.question.QuestionReqDTO;
-import com.hust.documentweb.dto.question.QuestionResDTO;
-import com.hust.documentweb.dto.question.QuestionUpdateDTO;
-import com.hust.documentweb.entity.Question;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.hust.documentweb.dto.question.QuestionReqDTO;
+import com.hust.documentweb.dto.question.QuestionResDTO;
+import com.hust.documentweb.dto.question.QuestionUpdateDTO;
+import com.hust.documentweb.entity.Question;
 
 @Configuration
 public class QuestionConfigMapper {
@@ -16,16 +17,15 @@ public class QuestionConfigMapper {
     public ModelMapper questionMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-        PropertyMap<?,?> map1 = new PropertyMap<Question, QuestionResDTO>(){
-            protected void configure() {
-            }
+        PropertyMap<?, ?> map1 = new PropertyMap<Question, QuestionResDTO>() {
+            protected void configure() {}
         };
-        PropertyMap<?,?> map2 = new PropertyMap<QuestionReqDTO, Question>(){
+        PropertyMap<?, ?> map2 = new PropertyMap<QuestionReqDTO, Question>() {
             protected void configure() {
                 skip(destination.getId());
             }
         };
-        PropertyMap<?,?> map3 = new PropertyMap<QuestionUpdateDTO, Question>(){
+        PropertyMap<?, ?> map3 = new PropertyMap<QuestionUpdateDTO, Question>() {
             @Override
             protected void configure() {
                 skip(destination.getId());

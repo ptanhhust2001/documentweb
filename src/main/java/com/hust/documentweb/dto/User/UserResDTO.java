@@ -1,10 +1,11 @@
 package com.hust.documentweb.dto.User;
 
-import com.hust.documentweb.entity.Role;
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.util.Set;
+
+import com.hust.documentweb.entity.Role;
+
+import lombok.Data;
 
 @Data
 public class UserResDTO {

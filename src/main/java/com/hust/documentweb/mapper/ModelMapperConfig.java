@@ -11,8 +11,7 @@ public class ModelMapperConfig {
     public ModelMapper mapper() {
         // Tạo object và cấu hình
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.STANDARD);
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         return modelMapper;
     }
 }

@@ -1,10 +1,9 @@
 package com.hust.documentweb.service.classentity;
 
+import java.util.List;
 
 import com.hust.documentweb.dto.classenity.ClassReqDTO;
 import com.hust.documentweb.dto.classenity.ClassResDTO;
-
-import java.util.List;
 
 public interface IClassService {
     ClassResDTO create(ClassReqDTO dto);

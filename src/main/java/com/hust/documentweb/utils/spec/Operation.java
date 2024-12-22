@@ -1,12 +1,14 @@
 package com.hust.documentweb.utils.spec;
 
-
 import lombok.Data;
 
 @Data
 public class Operation {
     enum OPERATOR {
-        LIKE, EQUAL, LARGER, SMALLER
+        LIKE,
+        EQUAL,
+        LARGER,
+        SMALLER
     }
 
     private String key;

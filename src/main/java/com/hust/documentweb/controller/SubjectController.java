@@ -1,16 +1,18 @@
 package com.hust.documentweb.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.hust.documentweb.dto.ResponseDTO;
 import com.hust.documentweb.dto.subject.SubjectReqDTO;
 import com.hust.documentweb.dto.subject.SubjectResDTO;
 import com.hust.documentweb.service.subject.ISubjectService;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
@@ -35,7 +37,7 @@ public class SubjectController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO<SubjectResDTO>> update(@RequestParam Long id,@RequestBody SubjectReqDTO dto) {
+    public ResponseEntity<ResponseDTO<SubjectResDTO>> update(@RequestParam Long id, @RequestBody SubjectReqDTO dto) {
         return ResponseEntity.ok(ResponseDTO.success(service.update(id, dto)));
     }
 

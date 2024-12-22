@@ -1,10 +1,11 @@
 package com.hust.documentweb.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Entity
 @Table(name = "subject")
@@ -26,5 +27,4 @@ public class Subject {
 
     @OneToMany(mappedBy = "subject")
     List<Exam> exams;
-
 }

@@ -66,10 +66,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapperStruct.updateUser(user, request);
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        //        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-//        var roles = roleRepository.findAllById(request.getRoles());
-//        user.setRoles(new HashSet<>(roles));
+        //        var roles = roleRepository.findAllById(request.getRoles());
+        //        user.setRoles(new HashSet<>(roles));
 
         return userMapperStruct.toUserResponse(userRepository.save(user));
     }
@@ -82,7 +82,9 @@ public class UserService {
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
         log.info("In method get Users");
-        return userRepository.findAll().stream().map(userMapperStruct::toUserResponse).toList();
+        return userRepository.findAll().stream()
+                .map(userMapperStruct::toUserResponse)
+                .toList();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

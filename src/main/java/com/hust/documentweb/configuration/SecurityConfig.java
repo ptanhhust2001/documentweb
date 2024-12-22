@@ -25,37 +25,29 @@ public class SecurityConfig {
         "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
     };
 
-    private final String[] PUBLIC_ENDPOINT_POST = {"/users",
-            "/auth/token",
-            "/auth/introspect",
-            "/auth/logout",
-            "/auth/refresh",
-            "/**"
+    private final String[] PUBLIC_ENDPOINT_POST = {
+        "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh", "/**"
     };
-    private final String[] PUBLIC_ENDPOINT_GET = {
-            "/**"
-    };
+    private final String[] PUBLIC_ENDPOINT_GET = {"/**"};
 
-    private final String[] PUBLIC_ENDPOINT_PUT = {
-            "/**"
-    };
-    private final String[] PUBLIC_ENDPOINT_DELETE = {
-            "/**"
-    };
+    private final String[] PUBLIC_ENDPOINT_PUT = {"/**"};
+    private final String[] PUBLIC_ENDPOINT_DELETE = {"/**"};
 
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
-                request
-//                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINT_GET).permitAll()
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINT_PUT).permitAll()
-                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINT_DELETE).permitAll()
-
+        httpSecurity.authorizeHttpRequests(request -> request
+                //                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT_POST)
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINT_GET)
+                .permitAll()
+                .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINT_PUT)
+                .permitAll()
+                .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINT_DELETE)
+                .permitAll()
                 .anyRequest()
                 .authenticated());
 

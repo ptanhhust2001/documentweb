@@ -1,12 +1,12 @@
 package com.hust.documentweb.service.subject;
 
+import java.util.List;
+
 import com.hust.documentweb.dto.subject.SubjectReqDTO;
 import com.hust.documentweb.dto.subject.SubjectResDTO;
 
-import java.util.List;
-
 public interface ISubjectService {
-    //FAILED
+    // FAILED
     List<SubjectResDTO> findAll();
 
     SubjectResDTO findById(Long id);

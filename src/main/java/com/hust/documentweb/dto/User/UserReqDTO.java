@@ -1,18 +1,16 @@
 package com.hust.documentweb.dto.User;
 
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.Size;
 
 import com.hust.documentweb.constant.EError;
-import jakarta.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-
-
-
 
 @Data
 @AllArgsConstructor
@@ -20,6 +18,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserReqDTO {
     private String username;
+
     @Size(min = 6, max = 20, message = EError.FORMAT_INVALID)
     private String password;
 

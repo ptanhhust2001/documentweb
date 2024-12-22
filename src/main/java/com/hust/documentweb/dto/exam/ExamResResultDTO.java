@@ -1,10 +1,9 @@
 package com.hust.documentweb.dto.exam;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class ExamResResultDTO {

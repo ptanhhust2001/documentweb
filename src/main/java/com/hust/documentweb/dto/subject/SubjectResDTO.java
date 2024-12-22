@@ -3,7 +3,6 @@ package com.hust.documentweb.dto.subject;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
 @Getter
 @Setter
 @Builder
@@ -14,5 +13,4 @@ public class SubjectResDTO {
     Long id;
 
     String name;
-
 }

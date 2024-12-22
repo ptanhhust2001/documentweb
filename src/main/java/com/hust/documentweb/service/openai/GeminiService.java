@@ -1,9 +1,8 @@
 package com.hust.documentweb.service.openai;
 
-import com.hust.documentweb.constant.CommonConstrant;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,8 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hust.documentweb.constant.CommonConstrant;
 
 @Service
 public class GeminiService {
@@ -45,15 +47,16 @@ public class GeminiService {
         parts.put("text", content);
 
         Map<String, Object> contents = new HashMap<>();
-        contents.put("parts", new Map[]{parts});
+        contents.put("parts", new Map[] {parts});
 
         Map<String, Object> body = new HashMap<>();
-        body.put("contents", new Map[]{contents});
+        body.put("contents", new Map[] {contents});
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // Send request
-        ResponseEntity<String> response = restTemplate.exchange(geminiUrl, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> response =
+                restTemplate.exchange(geminiUrl, HttpMethod.POST, requestEntity, String.class);
 
         return getContent(response.getBody());
     }
@@ -64,7 +67,7 @@ public class GeminiService {
 
         // Trích xuất phần tử "candidates"
         JsonNode candidates = rootNode.path("candidates");
-        String extractedText = "";  // Biến để lưu trữ nội dung "text"
+        String extractedText = ""; // Biến để lưu trữ nội dung "text"
 
         if (candidates.isArray() && candidates.size() > 0) {
             // Lấy "content" từ phần tử đầu tiên của mảng "candidates"
@@ -78,6 +81,4 @@ public class GeminiService {
         }
         return extractedText;
     }
-
-
 }

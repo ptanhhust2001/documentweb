@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ResponsePageDTO<T> extends ResponseDTO<T>{
+public class ResponsePageDTO<T> extends ResponseDTO<T> {
     private long totalElements;
 
     public ResponsePageDTO(int status, Object message, T value, long totalElements) {

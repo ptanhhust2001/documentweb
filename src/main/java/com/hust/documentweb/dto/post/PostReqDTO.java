@@ -1,9 +1,13 @@
 package com.hust.documentweb.dto.post;
 
-import com.hust.documentweb.constant.CommonConstrant;
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+
 import com.hust.documentweb.constant.EError;
 import com.hust.documentweb.constant.enums.EPostType;
-import jakarta.validation.constraints.NotBlank;
+import com.hust.documentweb.dto.material.MaterialReqDTO;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +24,7 @@ public class PostReqDTO {
 
     @NotBlank(message = EError.NOT_NULL_OR_EMPTY)
     String content;
+
     String description;
     String imageFilePath;
 
@@ -27,6 +32,9 @@ public class PostReqDTO {
 
     @NotBlank(message = EError.NOT_NULL_OR_EMPTY)
     Long subjectId;
+
     @NotBlank(message = EError.NOT_NULL_OR_EMPTY)
     Long classEntityId;
+
+    List<MaterialReqDTO> materials;
 }

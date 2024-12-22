@@ -1,15 +1,15 @@
 package com.hust.documentweb.mapper;
 
-
-import com.hust.documentweb.dto.comment.CommentReqDTO;
-import com.hust.documentweb.dto.comment.CommentResDTO;
-import com.hust.documentweb.dto.comment.CommentUpdateDTO;
-import com.hust.documentweb.entity.Comment;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.hust.documentweb.dto.comment.CommentReqDTO;
+import com.hust.documentweb.dto.comment.CommentResDTO;
+import com.hust.documentweb.dto.comment.CommentUpdateDTO;
+import com.hust.documentweb.entity.Comment;
 
 @Configuration
 public class CommentConfigMapper {
@@ -17,16 +17,15 @@ public class CommentConfigMapper {
     public ModelMapper commentMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-        PropertyMap<?,?> map1 = new PropertyMap<Comment, CommentResDTO>(){
-            protected void configure() {
-            }
+        PropertyMap<?, ?> map1 = new PropertyMap<Comment, CommentResDTO>() {
+            protected void configure() {}
         };
-        PropertyMap<?,?> map2 = new PropertyMap<CommentReqDTO, Comment>(){
+        PropertyMap<?, ?> map2 = new PropertyMap<CommentReqDTO, Comment>() {
             protected void configure() {
                 skip(destination.getId());
             }
         };
-        PropertyMap<?,?> map3 = new PropertyMap<CommentUpdateDTO, Comment>(){
+        PropertyMap<?, ?> map3 = new PropertyMap<CommentUpdateDTO, Comment>() {
             @Override
             protected void configure() {
                 skip(destination.getId());

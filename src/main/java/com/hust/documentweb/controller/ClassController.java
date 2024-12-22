@@ -1,15 +1,16 @@
 package com.hust.documentweb.controller;
 
-import com.hust.documentweb.dto.ResponseDTO;
-import com.hust.documentweb.dto.classenity.ClassReqDTO;
-import com.hust.documentweb.dto.classenity.ClassResDTO;
+import java.util.List;
 
-import com.hust.documentweb.service.classentity.IClassService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.hust.documentweb.dto.ResponseDTO;
+import com.hust.documentweb.dto.classenity.ClassReqDTO;
+import com.hust.documentweb.dto.classenity.ClassResDTO;
+import com.hust.documentweb.service.classentity.IClassService;
+
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/class")
@@ -33,8 +34,8 @@ public class ClassController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO<ClassResDTO>> update(@PathVariable Long id,@RequestBody ClassReqDTO dto) {
-        return ResponseEntity.ok(ResponseDTO.success(service.update(id ,dto)));
+    public ResponseEntity<ResponseDTO<ClassResDTO>> update(@PathVariable Long id, @RequestBody ClassReqDTO dto) {
+        return ResponseEntity.ok(ResponseDTO.success(service.update(id, dto)));
     }
 
     @DeleteMapping

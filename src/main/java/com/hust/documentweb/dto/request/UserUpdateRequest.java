@@ -1,7 +1,6 @@
 package com.hust.documentweb.dto.request;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.hust.documentweb.validator.DobConstraint;
 
@@ -20,5 +19,4 @@ public class UserUpdateRequest {
 
     @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
-
 }

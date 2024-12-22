@@ -17,7 +17,7 @@ public class QuestionResDTO {
     String secondAnswer;
     String thirdAnswer;
     String fourthAnswer;
-//    String correctAnswer;
-//
-//    Long examId;
+    //    String correctAnswer;
+    //
+    //    Long examId;
 }
