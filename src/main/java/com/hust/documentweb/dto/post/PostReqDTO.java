@@ -5,7 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 
 import com.hust.documentweb.constant.EError;
-import com.hust.documentweb.constant.enums.EPostType;
+import com.hust.documentweb.constant.enums.EType;
 import com.hust.documentweb.dto.material.MaterialReqDTO;
 
 import lombok.AccessLevel;
@@ -28,7 +28,7 @@ public class PostReqDTO {
     String description;
     String imageFilePath;
 
-    EPostType type;
+    EType type;
 
     @NotBlank(message = EError.NOT_NULL_OR_EMPTY)
     Long subjectId;

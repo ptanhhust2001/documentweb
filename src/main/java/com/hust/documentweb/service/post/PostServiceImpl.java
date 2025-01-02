@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.hust.documentweb.repository.*;
-import com.hust.documentweb.service.comment.ICommentService;
+import com.hust.documentweb.constant.enums.EPostType;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,7 @@ import com.hust.documentweb.dto.post.PostResDTO;
 import com.hust.documentweb.dto.post.PostUpdateDTO;
 import com.hust.documentweb.entity.*;
 import com.hust.documentweb.exception.BookException;
+import com.hust.documentweb.repository.*;
 import com.hust.documentweb.utils.spec.BaseSpecs;
 import com.hust.documentweb.utils.spec.Utils;
 
@@ -43,7 +43,6 @@ public class PostServiceImpl implements IPostService {
     ModelMapper postMapper;
     ModelMapper commentMapper;
     CommentRepository commentRepository;
-
 
     @Override
     public ResponsePageDTO<List<PostResDTO>> findAll(Pageable pageable, String advancedSearch) {
@@ -70,11 +69,14 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public PostResDTO findById(Long id) {
+        Optional<Post> postOptional = repository.findById(id);
         Post data = repository
                 .findById(id)
                 .orElseThrow(() ->
                         new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, List.of(id))));
         PostResDTO result = postMapper.map(data, PostResDTO.class);
+        data.setViews(data.getViews() + 1);
+        repository.save(data);
         result.setComments(data.getComments().stream()
                 .map(comment -> commentMapper.map(comment, CommentResDTO.class))
                 .toList());
@@ -86,12 +88,10 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public PostResDTO create(PostReqDTO dto) {
+    public PostResDTO create(PostReqDTO dto, EPostType postType) {
         Post data = postMapper.map(dto, Post.class);
         Map<Object, Object> errorsMap = new HashMap<>();
-        Optional<ClassEntity> classOpt = classRepository.findById(dto.getClassEntityId());
-        Optional<Subject> subjectOpt = subjectRepository.findById(dto.getSubjectId());
-        Optional<User> userOpt = userRepository.findByUsername(Utils.getCurrentUser());
+
 
         Set<Material> materials = dto.getMaterials().stream()
                 .map(materialReqDTO -> {
@@ -101,21 +101,26 @@ public class PostServiceImpl implements IPostService {
                 })
                 .collect(Collectors.toSet());
         data.setMaterials(materials);
-
-        if (classOpt.isEmpty()) errorsMap.put(ErrorCommon.CLASS_DOES_NOT_EXIST, List.of(dto.getClassEntityId()));
-        if (subjectOpt.isEmpty()) errorsMap.put(ErrorCommon.SUBJECT_DOES_NOT_EXIST, List.of(dto.getSubjectId()));
+        if (postType.equals(EPostType.INTERNAL)) {
+            Optional<ClassEntity> classOpt = classRepository.findById(dto.getClassEntityId());
+            Optional<Subject> subjectOpt = subjectRepository.findById(dto.getSubjectId());
+            if (classOpt.isEmpty()) errorsMap.put(ErrorCommon.CLASS_DOES_NOT_EXIST, List.of(dto.getClassEntityId()));
+            if (subjectOpt.isEmpty()) errorsMap.put(ErrorCommon.SUBJECT_DOES_NOT_EXIST, List.of(dto.getSubjectId()));
+            data.setClassEntity(classOpt.get());
+            data.setSubject(subjectOpt.get());
+        }
+        Optional<User> userOpt = userRepository.findByUsername(Utils.getCurrentUser());
         if (userOpt.isEmpty()) errorsMap.put(ErrorCommon.USER_DOES_NOT_EXIST, List.of(Utils.getCurrentUser()));
-
         if (!errorsMap.isEmpty()) throw new BookException(FunctionError.CREATE_FAILED, errorsMap);
-
-        data.setClassEntity(classOpt.get());
-        data.setSubject(subjectOpt.get());
         data.setUser(userOpt.get());
         data.setAuthor(userOpt.get().getLastName());
 
+        data.setPostType(postType);
         save(data, true);
         return postMapper.map(data, PostResDTO.class);
     }
+
+
 
     @Override
     public PostResDTO update(Long id, PostUpdateDTO dto) {

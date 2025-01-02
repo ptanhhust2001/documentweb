@@ -47,5 +47,7 @@ openai:
     model: gemini-1.5-flash-latest:generateContent
     url: https://generativelanguage.googleapis.com/v1beta/models/
 
-
+app:
+  config:
+    dataStoragePath: D:\books
 

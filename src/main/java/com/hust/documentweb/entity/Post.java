@@ -6,6 +6,7 @@ import java.util.Set;
 import jakarta.persistence.*;
 
 import com.hust.documentweb.constant.enums.EPostType;
+import com.hust.documentweb.constant.enums.EType;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +34,10 @@ public class Post {
     String imageFilePath;
 
     @Enumerated(EnumType.STRING)
-    EPostType type;
+    EType type;
+
+    @Enumerated(EnumType.STRING)
+    EPostType postType;
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
@@ -60,4 +64,6 @@ public class Post {
     String createBy;
 
     String updateBy;
+
+    Integer views = 0;
 }

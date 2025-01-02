@@ -3,6 +3,9 @@ package com.hust.documentweb.constant;
 public class CommonConstrant {
     public static final String DEFAULT_AVATAR = "uploads/avatars/default.jpg";
     public static final String KEY = "?key=";
+    public static final String INTERNAL = "INTERNAL";
+    public static final String COMMUNITY = "COMMUNITY";
+    public static final String POST_TYPE = "postType";
 
     public static final String NEW_OPERATOR = "＆（）｜＝＞＜～［］！，≠≁";
     public static final String FORMAT =

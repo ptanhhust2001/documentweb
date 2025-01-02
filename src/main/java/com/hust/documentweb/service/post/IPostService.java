@@ -2,6 +2,7 @@ package com.hust.documentweb.service.post;
 
 import java.util.List;
 
+import com.hust.documentweb.constant.enums.EPostType;
 import org.springframework.data.domain.Pageable;
 
 import com.hust.documentweb.dto.ResponsePageDTO;
@@ -14,7 +15,7 @@ public interface IPostService {
 
     PostResDTO findById(Long id);
 
-    PostResDTO create(PostReqDTO dto);
+    PostResDTO create(PostReqDTO dto, EPostType postType);
 
     PostResDTO update(Long id, PostUpdateDTO dto);
 

@@ -2,6 +2,8 @@ package com.hust.documentweb.controller;
 
 import java.util.List;
 
+import com.hust.documentweb.constant.CommonConstrant;
+import com.hust.documentweb.constant.enums.EPostType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,26 @@ public class PostController {
         return ResponseEntity.ok((service.findAll(pageable, advanceSearch)));
     }
 
+    @GetMapping("/internal")
+    public ResponseEntity<ResponsePageDTO<List<PostResDTO>>> getAllInternal(
+            @RequestParam(required = false) String advanceSearch,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "" + Integer.MAX_VALUE) int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        advanceSearch =  (advanceSearch == null || advanceSearch.isBlank() ? "" : advanceSearch + CommonConstrant.AND) + CommonConstrant.POST_TYPE + CommonConstrant.EQUAL + CommonConstrant.INTERNAL;
+        return ResponseEntity.ok((service.findAll(pageable, advanceSearch)));
+    }
+
+    @GetMapping("/community")
+    public ResponseEntity<ResponsePageDTO<List<PostResDTO>>> getAllCommunity(
+            @RequestParam(required = false) String advanceSearch,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "" + Integer.MAX_VALUE) int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        advanceSearch = (advanceSearch == null || advanceSearch.isBlank() ? "" : advanceSearch + CommonConstrant.AND) + CommonConstrant.POST_TYPE + CommonConstrant.EQUAL + CommonConstrant.COMMUNITY;
+        return ResponseEntity.ok((service.findAll(pageable, advanceSearch)));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<PostResDTO>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ResponseDTO.success(service.findById(id)));
@@ -41,7 +63,12 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<PostResDTO>> create(@RequestBody PostReqDTO dto) {
-        return ResponseEntity.ok(ResponseDTO.success(service.create(dto)));
+        return ResponseEntity.ok(ResponseDTO.success(service.create(dto, EPostType.INTERNAL)));
+    }
+
+    @PostMapping("/community")
+    public ResponseEntity<ResponseDTO<PostResDTO>> createCommunity(@RequestBody PostReqDTO dto) {
+        return ResponseEntity.ok(ResponseDTO.success(service.create(dto, EPostType.COMMUNITY)));
     }
 
     @PutMapping

@@ -41,6 +41,8 @@ public class PostResDTO {
 
     String updateBy;
 
+    Integer views;
+
     List<CommentResDTO> comments;
 
     List<MaterialResDTO> materials;
