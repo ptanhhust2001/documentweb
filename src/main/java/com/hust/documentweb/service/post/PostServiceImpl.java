@@ -50,10 +50,17 @@ public class PostServiceImpl implements IPostService {
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by("updateAt").descending());
-        Page data = repository.findAll(BaseSpecs.searchQuery(advancedSearch), page);
+        Page<Post> data = repository.findAll(BaseSpecs.searchQuery(advancedSearch), page);
         List<PostResDTO> results = data.getContent().stream()
-                .map(post -> postMapper.map(post, PostResDTO.class))
+                .map(post -> {
+                    PostResDTO resDTO = postMapper.map(post, PostResDTO.class);
+                    resDTO.setComments(post.getComments().stream()
+                            .map(comment -> commentMapper.map(comment, CommentResDTO.class))
+                            .toList());
+                    return resDTO;
+                })
                 .toList();
+
         return ResponsePageDTO.success(results, data.getTotalElements());
     }
 
@@ -69,9 +76,8 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public PostResDTO findById(Long id) {
-        Optional<Post> postOptional = repository.findById(id);
         Post data = repository
-                .findById(id)
+                .findAllById(List.of(id)).stream().findFirst()
                 .orElseThrow(() ->
                         new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, List.of(id))));
         PostResDTO result = postMapper.map(data, PostResDTO.class);
@@ -125,7 +131,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     public PostResDTO update(Long id, PostUpdateDTO dto) {
         Post data = repository
-                .findById(id)
+                .findAllById(List.of(id)).stream().findFirst()
                 .orElseThrow(() ->
                         new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, List.of(id))));
         postMapper.map(dto, data);
@@ -135,10 +141,13 @@ public class PostServiceImpl implements IPostService {
     }
 
     public void deleteAllById(List<Long> ids) {
-        List<Long> notFound =
-                ids.stream().filter(id -> repository.findById(id).isEmpty()).toList();
-        if (!notFound.isEmpty())
-            throw new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, notFound));
+        List<Post> posts = repository.findAllById(ids);
+
+        if (posts.size() != ids.size())
+            throw new BookException(FunctionError.NOT_FOUND, Map.of(ErrorCommon.POST_NOT_FOUND, ids));
+        for (Post post : posts) {
+            commentRepository.deleteAll(post.getComments());
+        }
         repository.deleteAllByIdInBatch(ids);
     }
 

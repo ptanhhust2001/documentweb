@@ -2,8 +2,11 @@ package com.hust.documentweb.controller;
 
 import java.util.List;
 
+import com.hust.documentweb.dto.ResponseDTO;
+import com.hust.documentweb.dto.User.UserUpdateRoleDTO;
 import jakarta.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.hust.documentweb.dto.request.ApiResponse;
@@ -64,5 +67,11 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userId, request))
                 .build();
+    }
+
+    @PutMapping("/role/{userId}")
+    ResponseEntity<ResponseDTO<Void>> updateRole(@PathVariable Long userId, @RequestBody UserUpdateRoleDTO dto) {
+        userService.updateRole(userId, dto);
+        return ResponseEntity.ok(ResponseDTO.success());
     }
 }

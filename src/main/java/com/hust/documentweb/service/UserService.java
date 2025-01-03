@@ -2,7 +2,9 @@ package com.hust.documentweb.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.hust.documentweb.dto.User.UserUpdateRoleDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,5 +93,13 @@ public class UserService {
     public UserResponse getUser(Long id) {
         return userMapperStruct.toUserResponse(
                 userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    }
+
+    public void updateRole(Long userId, UserUpdateRoleDTO dto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Role role = roleRepository.findById(dto.getRoleName()).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        user.setRoles(Set.of(role));
+        userRepository.save(user);
     }
 }

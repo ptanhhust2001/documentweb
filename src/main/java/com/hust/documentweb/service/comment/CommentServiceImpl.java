@@ -64,7 +64,7 @@ public class CommentServiceImpl implements ICommentService {
     public CommentResDTO create(CommentReqDTO dto) {
         Comment data = commentMapper.map(dto, Comment.class);
         // thieu
-        Optional<Post> postOpt = postRepository.findById(dto.getPostId());
+        Optional<Post> postOpt = postRepository.findAllById(List.of(dto.getPostId())).stream().findFirst();
         if (postOpt.isEmpty())
             throw new BookException(
                     FunctionError.CREATE_FAILED, Map.of(ErrorCommon.POST_DOES_NOT_EXIST, dto.getPostId()));
