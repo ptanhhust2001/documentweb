@@ -67,4 +67,14 @@ public class FileServiceImpl implements IFileService {
             throw new BookException(FunctionError.NOT_FOUND, "Error: " + mex.getMessage());
         }
     }
+
+    @Override
+    public void delete(String filename) {
+        try {
+            Path file = root.resolve(filename);
+            Files.deleteIfExists(file);
+        } catch (IOException ex) {
+            throw new BookException(FunctionError.DELETE_FAILED, "Could not delete the file: " + filename);
+        }
+    }
 }

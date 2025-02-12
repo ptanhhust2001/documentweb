@@ -94,7 +94,8 @@ public class UserService {
         return userMapperStruct.toUserResponse(
                 userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
-
+    
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateRole(Long userId, UserUpdateRoleDTO dto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 

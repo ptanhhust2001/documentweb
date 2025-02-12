@@ -132,8 +132,22 @@ public class ExamServiceImpl implements IExamService {
 
     @Override
     public void deleteAllById(List<Long> ids) {
+        String user = Utils.getCurrentUser();
         List<Long> notFound =
                 ids.stream().filter(id -> repository.findById(id).isEmpty()).toList();
+        List<Long> notPermit = ids.stream().filter(id ->
+                {
+                    Exam exam = repository.findById(id).orElse(null);
+                    if (exam != null) {
+                        if (!Objects.equals(exam.getUser().getUsername(), user)) return true;
+                    }
+                    return false;
+                })
+                .toList();
+
+        if (!notPermit.isEmpty())
+            throw new BookException(FunctionError.DELETE_FAILED, Map.of(ErrorCommon.CAN_NOT_DELETE_EXAM, notPermit));
+
         if (!notFound.isEmpty())
             throw new BookException(FunctionError.DELETE_FAILED, Map.of(ErrorCommon.EXAM_NOT_FOUND, notFound));
         repository.deleteAllById(ids);
